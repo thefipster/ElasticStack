@@ -1,4 +1,4 @@
-version: '2'
+version: '3.7'
 
 volumes:
 
@@ -7,6 +7,14 @@ volumes:
     
   elasticsearch2_data:
     driver: local
+
+configs:
+  elasticstack-nginx-conf:
+    external: true
+
+secrets:
+  elasticstack-nginx-htpasswd:
+    external: true
 
 services:
 
@@ -56,11 +64,14 @@ services:
   proxy:
     image: nginx:latest
     restart: always
-    volumes:
-      - ./nginx/config:/etc/nginx/conf.d:ro,Z
-      - ./nginx/htpasswd.users:/etc/nginx/htpasswd.users:ro,Z
+    configs:
+      - source: elasticstack-nginx-conf
+        target: /etc/nginx/conf.d
+    secrets:
+      - source: elasticstack-nginx-htpasswd
+        target: /etc/nginx/htpasswd.users
     ports:
-      - "3000:80"
+      - "9100:80"
     links:
       - kibana
     depends_on:
