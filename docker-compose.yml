@@ -36,7 +36,7 @@ services:
       - elasticsearch
 
   proxy:
-    image: nginx:latest
+    image: nginx:1.17
     deploy:
       replicas: 1
     configs:
